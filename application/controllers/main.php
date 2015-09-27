@@ -15,8 +15,13 @@ class Main extends MY_Controller {
  
     public function news($id_news){
     	$this->load->model('mnews');
-    	$data['news'] = $this->mnews->get_news($id_news);
-        $this->render_pages('news',$data);
+    	if($this->mnews->news($id_news)->num_rows > 0){
+           $data['news'] = $this->mnews->news($id_news)->row();
+           $this->render_pages('news',$data);
+        }else{
+            error_reporting(0);
+            $this->render_pages('news');
+        }
     }
 
 
@@ -39,7 +44,7 @@ class Main extends MY_Controller {
             }else{
 
                 $cek = $this->mnews->get_user($username,$password)->num_rows(); 
-                if($cek==1){
+                if($cek>=1){
                     $data = $this->mnews->get_user($username,$password)->row();
                     $this->session->set_userdata('islogin',TRUE);
                     $this->session->set_userdata('username',$data->username);
